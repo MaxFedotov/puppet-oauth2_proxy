@@ -10,3 +10,4 @@ spec/fixtures/modules/
 *.swp
 .vagrant
 .ruby-version
+.yardoc

@@ -1,45 +1,53 @@
-# == Class: oauth2_proxy
+# @summary
+#   Installs and configures oauth2_proxy.
 #
+# @example Install oauth2_proxy.
+#   class { 'oauth2_proxy':
+#     config  => {
+#       http_address            => ':80',
+#     }
+#   }
+#
+# @param user
+#   User for oauth2_proxy. Defaults to 'root'.
+# @param group
+#   User for oauth2_proxy. Defaults to 'root'.
+# @param package_name
+#   Package containing oauth2_proxy. Defaults to 'oauth2_proxy'.
+# @param version
+#   Version of oauth2_proxy. Defaults to 'latest'.
+# @param manage_service
+#   Specifies whether oauth2_proxy service should be managed. Defaults to 'true'.
+# @param package_install_options
+#   Array of install options for managed package resources. Appropriate options are passed to package manager.
+# @param config
+#   Hash of configuration options for oauth2_proxy
+#   
 class oauth2_proxy(
-  $user         = $::oauth2_proxy::params::user,
-  $manage_user  = $::oauth2_proxy::params::manage_user,
-  $group        = $::oauth2_proxy::params::group,
-  $manage_group = $::oauth2_proxy::params::manage_group,
-  $install_root = $::oauth2_proxy::params::install_root,
-  $source       = $::oauth2_proxy::params::source,
-  $checksum     = $::oauth2_proxy::params::checksum,
-  $systemd_path = $::oauth2_proxy::params::systemd_path,
-  $shell        = $::oauth2_proxy::params::shell,
-  $provider     = $::oauth2_proxy::params::provider,
+  String $user                           = $oauth2_proxy::params::user,
+  String $group                          = $oauth2_proxy::params::group,
+  String $package_name                   = $oauth2_proxy::params::package_name,
+  String $version                        = $oauth2_proxy::params::version,
+  Boolean $manage_service                = $oauth2_proxy::params::manage_service,
+  Array[String] $package_install_options = $oauth2_proxy::params::package_install_options,
+  Hash $config                           = {}
+
 ) inherits oauth2_proxy::params {
-  validate_string($user)
-  validate_bool($manage_user)
-  validate_string($group)
-  validate_bool($manage_group)
-  validate_absolute_path($install_root)
-  validate_string($source)
-  validate_string($checksum)
-  validate_absolute_path($systemd_path)
-  validate_absolute_path($shell)
 
-  if $manage_user {
-    user { $user:
-      gid    => $group,
-      system => true,
-      home   => '/',
-      shell  => $shell,
-    }
-  }
-
-  if $manage_group {
+  if $user != 'root' { # let's assume that 'root' will exist and not touch that...
     group { $group:
-      ensure => present,
-      system => true,
+      ensure => 'present',
+    }
+
+    user { $user:
+      ensure => 'present',
+      groups => $group,
     }
   }
 
-  anchor { '::oauth2_proxy::begin': }
-    -> class { '::oauth2_proxy::install': }
-      ~> Oauth2_proxy::Instance<| |>
-        -> anchor { '::oauth2_proxy::end': }
+  anchor { 'oauth2_proxy::begin': }
+  #-> class { 'oauth2_proxy::install': }
+  -> class { 'oauth2_proxy::config': }
+  -> class { 'oauth2_proxy::service': }
+  -> anchor { 'oauth2_proxy::end': }
 }
