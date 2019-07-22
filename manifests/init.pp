@@ -46,7 +46,7 @@ class oauth2_proxy(
   }
 
   anchor { 'oauth2_proxy::begin': }
-  #-> class { 'oauth2_proxy::install': }
+  -> class { 'oauth2_proxy::install': }
   -> class { 'oauth2_proxy::config': }
   -> class { 'oauth2_proxy::service': }
   -> anchor { 'oauth2_proxy::end': }
