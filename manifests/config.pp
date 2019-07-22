@@ -24,7 +24,7 @@ class oauth2_proxy::config {
     ensure  => file,
     owner   => $oauth2_proxy::user,
     group   => $oauth2_proxy::group,
-    mode    => '0440',
+    mode    => '0660',
     content => template('oauth2_proxy/oauth2_proxy.cfg.erb'),
     require => File['/etc/oauth2_proxy'],
   }
