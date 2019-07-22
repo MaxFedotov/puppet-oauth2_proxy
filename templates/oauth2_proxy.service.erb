@@ -1,11 +1,14 @@
 [Unit]
 Description=OAuth2 Proxy
+After=syslog.target network.target
 
 [Service]
 User=<%= scope['oauth2_proxy::user'] %>
 Group=<%= scope['oauth2_proxy::group'] %>
 ExecStart=/usr/bin/oauth2_proxy --config=/etc/oauth2_proxy/oauth2_proxy.cfg
 Restart=always
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
 
 [Install]
 WantedBy=multi-user.target
