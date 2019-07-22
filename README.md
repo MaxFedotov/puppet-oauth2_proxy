@@ -1,9 +1,9 @@
 # oauth2_proxy
 
-#### Table of Contents
+## Table of Contents
 
 - [oauth2_proxy](#oauth2proxy)
-      - [Table of Contents](#Table-of-Contents)
+  - [Table of Contents](#Table-of-Contents)
   - [Overview](#Overview)
   - [Description](#Description)
   - [Usage](#Usage)
@@ -41,14 +41,12 @@ This module installs and configures the
 class { 'oauth2_proxy':
     config => {
     http_address      => '127.0.0.1:4180',
-    client_id         => '1234',
-    client_secret     => 'abcd',
-    github_org        => 'foo',
+    client_id         => 'test',
+    client_secret     => 'test',
     upstreams         => [ 'http://127.0.0.1:3000' ],
-    cookie_secret     => '1234',
-    pass_access_token => false,
+    cookie_secret     => '1234567890',
     pass_host_header  => true,
-    provider          => 'github',
+    provider          => 'azure',
     redirect_url      => 'https://foo.example.org/oauth2/callback',
     email_domains     => [ '*' ],
   }
