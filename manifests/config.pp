@@ -27,6 +27,7 @@ class oauth2_proxy::config {
     mode    => '0660',
     content => template('oauth2_proxy/oauth2_proxy.cfg.erb'),
     require => File['/etc/oauth2_proxy'],
+    show_diff => false,
   }
 
 
